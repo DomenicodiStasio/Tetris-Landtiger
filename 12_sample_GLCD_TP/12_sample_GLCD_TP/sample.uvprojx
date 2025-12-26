@@ -615,6 +615,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Tetris_Game</GroupName>
+          <Files>
+            <File>
+              <FileName>tetris.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Tetris_Game\tetris.c</FilePath>
+            </File>
+            <File>
+              <FileName>tetris.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\Tetris_Game\tetris.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -1172,6 +1187,21 @@
               <FileName>mpu_armv7.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Source\CMSIS_core\mpu_armv7.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Tetris_Game</GroupName>
+          <Files>
+            <File>
+              <FileName>tetris.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Tetris_Game\tetris.c</FilePath>
+            </File>
+            <File>
+              <FileName>tetris.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\Tetris_Game\tetris.h</FilePath>
             </File>
           </Files>
         </Group>
