@@ -118,3 +118,30 @@ void Draw_Piece(int x, int y, int type, int rotation, uint16_t color) {
         Draw_Block(blockY, blockX, color); // Occhio: Draw_Block vuole (row, col) -> (y, x)
     }
 }
+
+// Restituisce 1 se c'è collisione (mossa non valida), 0 se è tutto OK
+int Check_Collision(int x, int y, int type, int rotation) {
+    int i;
+    int blockX, blockY;
+    
+    for(i = 0; i < 4; i++) {
+        // Coordinate assolute del singolo blocco
+        blockX = x + TETROMINOES[type][rotation][i][0];
+        blockY = y + TETROMINOES[type][rotation][i][1];
+        
+        // 1. Uscita dai bordi laterali (Destra/Sinistra)
+        if (blockX < 0 || blockX >= COLS) return 1;
+        
+        // 2. Uscita dal fondo (Il pezzo è arrivato giù)
+        if (blockY >= ROWS) return 1;
+        
+        // 3. Collisione con altri pezzi già fissati nella griglia
+        // (Nota: controlliamo board solo se blockY >= 0, perché i pezzi nascono un po' fuori in alto)
+        if (blockY >= 0 && board[blockY][blockX] != 0) return 1;
+    }
+    return 0; // Nessuna collisione
+}
+
+void Delete_Piece(int x, int y, int type, int rotation) {
+    Draw_Piece(x, y, type, rotation, Black);
+}

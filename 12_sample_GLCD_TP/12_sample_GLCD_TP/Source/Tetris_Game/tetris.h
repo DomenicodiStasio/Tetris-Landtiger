@@ -24,6 +24,8 @@ extern int currentY;        // Posizione Y sulla griglia
 
 /* --- NUOVI PROTOTIPI --- */
 void Draw_Piece(int x, int y, int type, int rotation, uint16_t color);
+int Check_Collision(int x, int y, int type, int rotation);
+void Delete_Piece(int x, int y, int type, int rotation);
 
 /* --- PROTOTIPI --- */
 void Tetris_Init(void);

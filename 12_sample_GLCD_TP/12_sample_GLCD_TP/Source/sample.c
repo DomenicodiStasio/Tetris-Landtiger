@@ -42,11 +42,35 @@ int main(void)
 	
 	Tetris_Init();
 
-	// Disegniamo una "T" rossa al centro
-	Draw_Piece(4, 5, 5, 0, Red); // x=4, y=5, tipo=5(T), rot=0
+	// ... dentro al main, dopo Tetris_Init ...
 
-	// Disegniamo una "I" ciano ruotata sotto
-	Draw_Piece(3, 10, 0, 1, Cyan); // x=3, y=10, tipo=0(I), rot=1
+// Impostiamo un pezzo di partenza
+int type = 5; // T
+int rot = 0;
+int x = 4;
+int y = 0;
+int i; // Variabile per il ciclo delay
+
+// Loop infinito di prova
+while(1) {
+    // 1. Disegna
+    Draw_Piece(x, y, type, rot, Red);
+    
+    // 2. Aspetta un po' (Delay bloccante brutale, solo per test!)
+    for(i=0; i<5000000; i++); 
+    
+    // 3. Prova a scendere di 1
+    if (Check_Collision(x, y + 1, type, rot) == 0) {
+        // Se c'è spazio: cancella vecchio -> aggiorna -> disegna nuovo (al prossimo giro)
+        Delete_Piece(x, y, type, rot);
+        y++;
+    } else {
+        // Se tocca il fondo, riportalo in cima (giusto per vedere che loopa)
+        // (Qui in futuro fisseremo il pezzo nella griglia)
+        Delete_Piece(x, y, type, rot);
+        y = 0; 
+    }
+}
 
 	/*
   	TP_Init();
