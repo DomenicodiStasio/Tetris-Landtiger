@@ -1,0 +1,29 @@
+# Keil uVision ignores
+*.o
+*.d
+*.crf
+*.dep
+*.axf
+*.hex
+*.htm
+*.lnp
+*.sct
+*.lst
+*.map
+*.plg
+*.iex
+*.tra
+*.bak
+*.uvgui.*
+*.uvoptx
+*.uvguix.*
+JLinkLog.txt
+
+# Cartelle di output standard di Keil (se presenti)
+Objects/
+Listings/
+RTE/
+
+# File di sistema
+.DS_Store
+Thumbs.db
