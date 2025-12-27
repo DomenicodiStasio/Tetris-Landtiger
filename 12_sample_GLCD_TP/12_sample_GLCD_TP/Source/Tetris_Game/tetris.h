@@ -35,4 +35,13 @@ void Move_Left(void);
 void Move_Right(void);
 void Rotate_Piece(void);
 
+// Inizializzazione
+void Reset_Board(void);
+
+void Lock_Piece(int x, int y, int piece, int rotation);
+
+// Gestione Righe e Aggiornamento
+void Check_Lines(void);
+void Update_Field(void);
+
 #endif

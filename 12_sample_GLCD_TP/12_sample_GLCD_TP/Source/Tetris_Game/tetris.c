@@ -174,3 +174,88 @@ void Rotate_Piece(void) {
         Draw_Piece(currentX, currentY, currentPiece, currentRotation, Red);
     }
 }
+
+void Lock_Piece(int x, int y, int piece, int rotation) {
+    int k;
+    for(k = 0; k < 4; k++) {
+        // Leggi le coordinate relative del k-esimo blocchetto
+        int relX = TETROMINOES[piece][rotation][k][0];
+        int relY = TETROMINOES[piece][rotation][k][1];
+        
+        // Calcola posizione assoluta nella Board
+        int boardX = x + relX;
+        int boardY = y + relY;
+        
+        // Salva nella Board (se dentro i limiti)
+        if(boardY >= 0 && boardY < 20 && boardX >= 0 && boardX < 10) {
+            board[boardY][boardX] = 1; // 1 = Occupato
+        }
+    }
+}
+
+void Update_Field(void) {
+    int i, j;
+    
+    // Scorre tutte le celle della Board (20 righe x 10 colonne)
+    for(i = 0; i < 20; i++) {
+        for(j = 0; j < 10; j++) {
+            
+            if(board[i][j] != 0) {
+                // Se c'è un blocco (occupato), disegnalo VERDE (o il colore che vuoi per i pezzi morti)
+                // Nota: La tua funzione accetta (row, col), quindi passiamo (i, j)
+                Draw_Block(i, j, Green); 
+            } else {
+                // Se è vuoto, disegna NERO per cancellare eventuali residui
+                Draw_Block(i, j, Black);
+            }
+        }
+    }
+}
+
+void Check_Lines(void) {
+    int i, j, k;
+    int count;
+    int lines_cleared = 0;
+
+    // Scansioniamo dalla riga più bassa (19) a quella più alta (0)
+    for(i = 19; i >= 0; i--) {
+        count = 0;
+        
+        // Conta quanti blocchi ci sono in questa riga
+        for(j = 0; j < 10; j++) {
+            if(board[i][j] != 0) {
+                count++;
+            }
+        }
+
+        // Se la riga è PIENA (10 blocchi)
+        if(count == 10) {
+            lines_cleared++; // Hai fatto punto!
+
+            // 1. Sposta tutte le righe sopra di questa verso il basso
+            for(k = i; k > 0; k--) {
+                for(j = 0; j < 10; j++) {
+                    board[k][j] = board[k-1][j];
+                }
+            }
+
+            // 2. Pulisci la riga 0 (la cima del campo ora è vuota)
+            for(j = 0; j < 10; j++) {
+                board[0][j] = 0;
+            }
+
+            // 3. IMPORTANTE: Rimaniamo sulla stessa riga 'i' al prossimo giro!
+            // Perché ora alla riga 'i' c'è il contenuto che prima era a 'i-1'.
+            // Potrebbe essere un'altra riga piena (es. hai fatto Tetris, 4 righe insieme).
+            i++; 
+        }
+    }
+
+    // Se abbiamo cancellato qualcosa, ridisegniamo il campo
+    if(lines_cleared > 0) {
+        Update_Field(); 
+        
+        // Qui puoi aggiungere punti se hai una variabile score
+        // score += 100 * lines_cleared;
+    }
+}
