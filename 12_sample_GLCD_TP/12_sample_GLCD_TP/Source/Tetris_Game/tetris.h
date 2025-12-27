@@ -17,18 +17,22 @@
 extern const int TETROMINOES[7][4][4][2]; 
 
 // Variabili di stato del gioco
-extern int currentPiece;    // Indice del pezzo (0-6)
-extern int currentRotation; // 0, 1, 2, 3
-extern int currentX;        // Posizione X sulla griglia
-extern int currentY;        // Posizione Y sulla griglia
+extern volatile int currentPiece;    // Indice del pezzo (0-6)
+extern volatile int currentRotation; // 0, 1, 2, 3
+extern volatile int currentX;        // Posizione X sulla griglia
+extern volatile int currentY;        // Posizione Y sulla griglia
 
-/* --- NUOVI PROTOTIPI --- */
-void Draw_Piece(int x, int y, int type, int rotation, uint16_t color);
-int Check_Collision(int x, int y, int type, int rotation);
-void Delete_Piece(int x, int y, int type, int rotation);
 
 /* --- PROTOTIPI --- */
 void Tetris_Init(void);
 void Draw_Block(int row, int col, uint16_t color);
+
+void Draw_Piece(int x, int y, int type, int rotation, uint16_t color);
+int Check_Collision(int x, int y, int type, int rotation);
+void Delete_Piece(int x, int y, int type, int rotation);
+
+void Move_Left(void);
+void Move_Right(void);
+void Rotate_Piece(void);
 
 #endif

@@ -5,10 +5,10 @@
 volatile int board[ROWS][COLS]; 
 
 // Variabili globali di gioco
-int currentPiece = 0;
-int currentRotation = 0;
-int currentX = 0;
-int currentY = 0;
+volatile int currentPiece = 0;
+volatile int currentRotation = 0;
+volatile int currentX = 0;
+volatile int currentY = 0;
 
 // Definizione dei 7 pezzi con le 4 rotazioni
 // Formato: { {x1,y1}, {x2,y2}, {x3,y3}, {x4,y4} }
@@ -144,4 +144,33 @@ int Check_Collision(int x, int y, int type, int rotation) {
 
 void Delete_Piece(int x, int y, int type, int rotation) {
     Draw_Piece(x, y, type, rotation, Black);
+}
+
+// Funzioni di movimento
+void Move_Left(void) {
+    // Controllo: Posso andare a sinistra (currentX - 1)?
+    if (Check_Collision(currentX - 1, currentY, currentPiece, currentRotation) == 0) {
+        Delete_Piece(currentX, currentY, currentPiece, currentRotation);
+        currentX--; // Sposto a sinistra
+        Draw_Piece(currentX, currentY, currentPiece, currentRotation, Red); // Ridisegno (per ora rosso fisso)
+    }
+}
+
+void Move_Right(void) {
+    if (Check_Collision(currentX + 1, currentY, currentPiece, currentRotation) == 0) {
+        Delete_Piece(currentX, currentY, currentPiece, currentRotation);
+        currentX++;
+        Draw_Piece(currentX, currentY, currentPiece, currentRotation, Red);
+    }
+}
+
+void Rotate_Piece(void) {
+    // Calcola la prossima rotazione (0 -> 1 -> 2 -> 3 -> 0)
+    int nextRotation = (currentRotation + 1) % 4;
+    
+    if (Check_Collision(currentX, currentY, currentPiece, nextRotation) == 0) {
+        Delete_Piece(currentX, currentY, currentPiece, currentRotation);
+        currentRotation = nextRotation;
+        Draw_Piece(currentX, currentY, currentPiece, currentRotation, Red);
+    }
 }

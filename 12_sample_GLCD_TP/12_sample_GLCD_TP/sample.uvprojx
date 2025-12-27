@@ -630,6 +630,26 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>RIT</GroupName>
+          <Files>
+            <File>
+              <FileName>IRQ_RIT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\RIT\IRQ_RIT.c</FilePath>
+            </File>
+            <File>
+              <FileName>lib_RIT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\RIT\lib_RIT.c</FilePath>
+            </File>
+            <File>
+              <FileName>RIT.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\RIT\RIT.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -1202,6 +1222,26 @@
               <FileName>tetris.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Source\Tetris_Game\tetris.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>RIT</GroupName>
+          <Files>
+            <File>
+              <FileName>IRQ_RIT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\RIT\IRQ_RIT.c</FilePath>
+            </File>
+            <File>
+              <FileName>lib_RIT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\RIT\lib_RIT.c</FilePath>
+            </File>
+            <File>
+              <FileName>RIT.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\RIT\RIT.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -20,80 +20,57 @@
 **
 *********************************************************************************************************/
 
-/* Includes ------------------------------------------------------------------*/
 #include "LPC17xx.h"
 #include "GLCD/GLCD.h" 
 #include "TouchPanel/TouchPanel.h"
 #include "timer/timer.h"
-
+#include "RIT/RIT.h"         // <--- Aggiungi questo
 #include "../Tetris_Game/tetris.h"
 
-
-#ifdef SIMULATOR
-extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emulator to find the symbol (can be placed also inside system_LPC17xx.h but since it is RO, it needs more work)
-#endif
-
-
-int main(void)
-{
-  SystemInit();  												/* System Initialization (i.e., PLL)  */
-	
-  LCD_Initialization();
-	
-	Tetris_Init();
-
-	// ... dentro al main, dopo Tetris_Init ...
-
-// Impostiamo un pezzo di partenza
-int type = 5; // T
-int rot = 0;
-int x = 4;
-int y = 0;
-int i; // Variabile per il ciclo delay
-
-// Loop infinito di prova
-while(1) {
-    // 1. Disegna
-    Draw_Piece(x, y, type, rot, Red);
+int main(void) {
+    SystemInit();  
+    LCD_Initialization();
+    LCD_Clear(Black);
     
-    // 2. Aspetta un po' (Delay bloccante brutale, solo per test!)
-    for(i=0; i<5000000; i++); 
+    // --- Configurazione JOYSTICK (P1.27, P1.28, P1.29) ---
+    // Imposta i pin come INPUT
+		LPC_GPIO1->FIODIR &= ~((1<<26)|(1<<27)|(1<<28)|(1<<29));
+
+    // --- Inizializza Grafica e Variabili di Gioco ---
+    Tetris_Init(); 
     
-    // 3. Prova a scendere di 1
-    if (Check_Collision(x, y + 1, type, rot) == 0) {
-        // Se c'è spazio: cancella vecchio -> aggiorna -> disegna nuovo (al prossimo giro)
-        Delete_Piece(x, y, type, rot);
-        y++;
-    } else {
-        // Se tocca il fondo, riportalo in cima (giusto per vedere che loopa)
-        // (Qui in futuro fisseremo il pezzo nella griglia)
-        Delete_Piece(x, y, type, rot);
-        y = 0; 
+    // --- Configurazione LED (P2.0 ... P2.7) ---
+    LPC_GPIO2->FIODIR |= 0x000000FF; // Output
+    LPC_GPIO2->FIOSET = 0x000000FF;  // Spegni tutto (Active Low)
+
+    // ============================================================
+    //    ATTIVAZIONE DEI DUE TIMER (CUORE DEL SISTEMA)
+    // ============================================================
+
+    // 1. RIT per il JOYSTICK (Veloce - 50ms)
+    // 0x004C4B40 = 50ms (con clock a 100MHz)
+    init_RIT(0x000F4240); 
+		//init_RIT(0x00030D40);
+		
+    enable_RIT();
+    // Nota: solitamente enable_RIT() abilita già l'interrupt, 
+    // ma se nel tuo lab serve esplicito, lascialo:
+    NVIC_EnableIRQ(RIT_IRQn);
+
+    // 2. TIMER0 per la GRAVITÀ (Lento - 1 secondo)
+    // La LandTiger ha i timer periferici solitamente a 25MHz (CCLK/4).
+    // 25.000.000 * (1/25MHz) = 1 secondo esatto.
+    // Sintassi: init_timer(timer_num, prescale, match_value);
+    init_timer(0, 600000); 
+    enable_timer(0);
+
+    // ============================================================
+    
+    // Loop infinito a basso consumo
+    // Tutto il lavoro ora lo fanno RIT_IRQHandler e TIMER0_IRQHandler
+    while(1) { 
+        __ASM("wfi"); 
     }
-}
-
-	/*
-  	TP_Init();
-	TouchPanel_Calibrate();
-	
-	LCD_Clear(Black);
-	GUI_Text(0, 280, (uint8_t *) " touch here : 1 sec to clear  ", Red, White); */
-	//LCD_DrawLine(0, 0, 200, 200, White);
-	//init_timer(0, 0x1312D0 ); 						/* 50ms * 25MHz = 1.25*10^6 = 0x1312D0 */
-	//init_timer(0, 0x6108 ); 						  /* 1ms * 25MHz = 25*10^3 = 0x6108 */
-	//init_timer(0, 0x4E2 ); 						    /* 500us * 25MHz = 1.25*10^3 = 0x4E2 */
-	//init_timer(0, 0xC8 ); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
-	
-	//enable_timer(0);
-	
-	//LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
-	//LPC_SC->PCON &= ~(0x2);				
-	
-
-  while (1)	
-  {
-		__ASM("wfi");
-  }
 }
 
 /*********************************************************************************************************

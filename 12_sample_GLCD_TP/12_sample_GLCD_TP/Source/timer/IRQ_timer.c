@@ -14,6 +14,11 @@
 #include "../TouchPanel/TouchPanel.h"
 #include <stdio.h> /*for sprintf*/
 
+extern volatile int currentX;
+extern volatile int currentY;
+extern volatile int currentPiece;
+extern volatile int currentRotation;
+
 /******************************************************************************
 ** Function name:		Timer0_IRQHandler
 **
@@ -23,42 +28,36 @@
 ** Returned value:		None
 **
 ******************************************************************************/
-
+/*********************************************************************************************************
+** Function name:       TIMER0_IRQHandler
+** Description:         Gestisce SOLO la gravità (scende in automatico)
+*********************************************************************************************************/
 void TIMER0_IRQHandler (void)
 {
-	static int clear = 0;
-	char time_in_char[5] = "";
-	int mosse[6][2]={{1,1},{-1,-1},{1,0},{-1,0},{0,1},{0,-1}};
-	int i=0;
-	
-  if(getDisplayPoint(&display, Read_Ads7846(), &matrix )){
-		if(display.y < 280){
-			for(i=0;i<6;i++)
-				TP_DrawPoint(display.x+mosse[i][0],display.y+mosse[i][1]);
-			TP_DrawPoint(display.x,display.y);
-			GUI_Text(200, 0, (uint8_t *) "     ", Blue, Blue);
-			clear = 0;
-		}
-		else{			
-			if(display.y <= 0x13E){			
-				clear++;
-				if(clear%20 == 0){
-					sprintf(time_in_char,"%4d",clear/20);
-					GUI_Text(200, 0, (uint8_t *) time_in_char, White, Blue);
-					if(clear == 200){	/* 1 seconds = 200 times * 500 us*/
-						LCD_Clear(Black);
-						GUI_Text(0, 280, (uint8_t *) " touch here : 1 sec to clear ", Blue, White);			
-						clear = 0;
-					}
-				}
-			}
-		}
-	}
-	else{
-		//do nothing if touch returns values out of bounds
-	}
-  LPC_TIM0->IR = 1;			/* clear interrupt flag */
-  return;
+    // Qui non servono contatori, perché questo timer scatta già lentamente!
+    
+    // Prova a scendere di 1
+    if (Check_Collision(currentX, currentY + 1, currentPiece, currentRotation) == 0) {
+        // Se c'è spazio: cancella, scendi, disegna
+        Delete_Piece(currentX, currentY, currentPiece, currentRotation);
+        currentY++;
+        Draw_Piece(currentX, currentY, currentPiece, currentRotation, Red);
+    } 
+    else {
+        // Se tocca il fondo o un altro pezzo:
+        // 1. Logica di "Lock" (fissa il pezzo nella griglia statica)
+        // 2. Controllo righe complete
+        // 3. Spawn nuovo pezzo
+        
+        // Esempio basico (quello che avevi tu):
+        Delete_Piece(currentX, currentY, currentPiece, currentRotation);
+        currentY = 0; 
+        currentX = 4;
+        Draw_Piece(currentX, currentY, currentPiece, currentRotation, Red);
+    }
+
+    // Reset flag Timer0
+    LPC_TIM0->IR = 1;
 }
 
 
